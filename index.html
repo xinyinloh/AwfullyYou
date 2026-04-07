@@ -1,0 +1,530 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif}
+.page{display:none}
+.page.active{display:block}
+
+.quiz-wrap{background:#0D0A06;padding:36px 32px 40px;min-height:500px}
+.quiz-header{text-align:center;margin-bottom:28px;padding-bottom:20px;border-bottom:0.5px solid #2A1F10}
+.brand-label{font-size:10px;letter-spacing:0.2em;color:#8A7355;text-transform:uppercase;margin-bottom:8px;font-family:Georgia,serif}
+.quiz-title{font-size:34px;color:#F0E2C0;font-weight:400;line-height:1;margin-bottom:4px}
+.quiz-title em{font-style:italic;font-weight:400}
+.quiz-title strong{font-weight:700}
+.quiz-sub-label{font-size:11px;letter-spacing:0.12em;color:#C9A76B;text-transform:uppercase;margin-bottom:10px}
+.gold-line{width:40px;height:1px;background:#C9A76B;margin:10px auto}
+.quiz-tagline{font-size:12px;color:#8A7355;font-style:italic}
+
+.progress-wrap{background:#1A1208;border-radius:3px;height:3px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:3px;background:#C9A76B;border-radius:3px;transition:width 0.4s ease}
+
+.q-block{display:none}
+.q-block.active{display:block}
+.q-num{font-size:10px;letter-spacing:0.14em;color:#C9A76B;text-transform:uppercase;margin-bottom:6px}
+.q-text{font-size:16px;color:#F0E2C0;font-weight:600;margin-bottom:16px;line-height:1.4}
+
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{background:#111009;border:0.5px solid #2A1F10;border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:all 0.15s;width:100%}
+.opt:hover{border-color:#C9A76B;background:#1A1208}
+.opt.sel{background:#1A1208;border:1.5px solid #C9A76B}
+.dot{width:16px;height:16px;border-radius:50%;border:1.5px solid #3A2A18;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
+.opt.sel .dot{background:#C9A76B;border-color:#C9A76B}
+.dot-in{width:6px;height:6px;border-radius:50%;background:white;display:none}
+.opt.sel .dot-in{display:block}
+.opt-label{font-size:12px;color:#A08060;line-height:1.4}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.btn-next{background:#2A1F14;color:#F0E2C0;border:none;padding:10px 24px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:Georgia,serif;transition:opacity 0.15s}
+.btn-next:disabled{opacity:0.3;cursor:not-allowed}
+.btn-back{background:none;border:0.5px solid #3A2A18;color:#8A7355;padding:10px 16px;border-radius:7px;font-size:12px;cursor:pointer;font-family:Georgia,serif}
+.btn-back:hover{background:#1A1208}
+
+/* RESULTS */
+.results-wrap{background:#0D0A06;padding:32px;min-height:500px}
+.result-top{text-align:center;margin-bottom:24px}
+.result-eyebrow{font-size:10px;letter-spacing:0.18em;color:#8A7355;text-transform:uppercase;margin-bottom:8px}
+.result-name{font-size:26px;font-weight:500;color:#F0E2C0;margin-bottom:4px}
+.result-tag{font-size:13px;font-style:italic;color:#8A7355;margin-bottom:16px}
+.result-card{border-radius:14px;padding:20px;margin-bottom:16px;text-align:center}
+.result-traits{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.trait{font-size:10px;padding:4px 12px;border-radius:20px;font-weight:600}
+.result-desc{font-size:12px;line-height:1.7;max-width:400px;margin:0 auto 16px;opacity:0.8}
+.cake-match-box{border-radius:10px;overflow:hidden;max-width:280px;margin:0 auto 20px}
+.cake-top{padding:8px 14px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600}
+.cake-name{padding:8px 14px 12px;font-size:14px;font-weight:600}
+.btn-studio{display:block;width:100%;padding:13px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:Georgia,serif;letter-spacing:0.04em;transition:opacity 0.15s;margin-bottom:10px}
+.btn-studio:hover{opacity:0.88}
+.btn-retake{background:none;border:0.5px solid #3A2A18;color:#8A7355;padding:9px 20px;border-radius:7px;font-size:11px;cursor:pointer;font-family:Georgia,serif;display:block;margin:0 auto}
+
+/* STUDIO */
+.studio-wrap{background:#F5F0E8;min-height:600px}
+.studio-nav{background:#111;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{color:#fff;font-size:13px;font-weight:400;letter-spacing:0.02em}
+.nav-brand strong{font-weight:700}
+.nav-links{display:flex;gap:16px}
+.nav-link{color:#888;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer}
+.nav-link.active-nav{color:#fff;font-weight:600}
+.studio-banner{background:#111;color:#F0E2C0;text-align:center;padding:5px;font-size:10px;letter-spacing:0.1em}
+
+.studio-body{padding:24px 24px 28px}
+.studio-header{margin-bottom:18px}
+.studio-title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.studio-title{font-size:22px;color:#1A0F00;font-weight:400}
+.studio-title em{font-style:italic}
+.studio-title strong{font-weight:700}
+.ai-badge{background:#C9A76B;color:#1A0F00;font-size:9px;padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:0.05em}
+.studio-sub{font-size:11px;color:#7A6040;font-style:italic}
+
+.studio-main{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cake-preview{background:#E8E0D0;border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px}
+.cake-svg-wrap{position:relative;margin-bottom:8px}
+.preview-hint{font-size:9px;color:#A08060;text-align:center;letter-spacing:0.06em;text-transform:uppercase}
+.creation-panel{background:white;border-radius:12px;padding:18px;border:0.5px solid #D8CEBB}
+.creation-title{font-size:10px;letter-spacing:0.14em;color:#8A7355;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+.creation-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:0.5px solid #F0E8D8}
+.creation-row:last-child{border-bottom:none}
+.cr-label{font-size:11px;color:#8A7355;font-weight:600}
+.cr-val{font-size:11px;color:#2A1A08;font-weight:400}
+
+.steps-bar{background:white;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:0;margin-bottom:14px;border:0.5px solid #D8CEBB;overflow-x:auto}
+.step-item{font-size:10px;color:#A08060;cursor:pointer;white-space:nowrap;padding:4px 8px;border-radius:5px;transition:all 0.15s;flex-shrink:0}
+.step-item.active-step{color:#1A0F00;font-weight:700;background:#F0E8D8}
+.step-item:hover:not(.active-step){color:#2A1A08}
+.step-sep{color:#D8CEBB;font-size:10px;flex-shrink:0}
+
+.config-panel{background:white;border-radius:12px;padding:18px;border:0.5px solid #D8CEBB;margin-bottom:14px}
+.config-title{font-size:10px;letter-spacing:0.14em;color:#C9A76B;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+.config-opts{display:flex;flex-wrap:wrap;gap:7px}
+.cfg-btn{background:#F5F0E8;border:0.5px solid #D8CEBB;border-radius:6px;padding:7px 12px;font-size:11px;color:#5A4030;cursor:pointer;font-family:Georgia,serif;transition:all 0.15s}
+.cfg-btn:hover{border-color:#C9A76B;background:#F0E8D8}
+.cfg-btn.cfg-sel{background:#2A1F14;color:#F0E2C0;border-color:#2A1F14}
+
+.msg-input-wrap{display:flex;gap:8px;align-items:center}
+.msg-input{background:#F5F0E8;border:0.5px solid #D8CEBB;border-radius:7px;padding:8px 12px;font-size:12px;color:#2A1A08;font-family:Georgia,serif;flex:1}
+.msg-input:focus{outline:none;border-color:#C9A76B}
+.font-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.font-sel{background:#F5F0E8;border:0.5px solid #D8CEBB;border-radius:6px;padding:6px 10px;font-size:11px;color:#5A4030;font-family:Georgia,serif;cursor:pointer}
+.font-sel.cfg-sel{background:#2A1F14;color:#F0E2C0}
+
+.ai-panel{background:#1A1208;border-radius:12px;padding:16px;border:0.5px solid #2A1F10;margin-bottom:14px}
+.ai-title{font-size:10px;letter-spacing:0.14em;color:#C9A76B;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+.ai-prompt-row{display:flex;gap:8px;margin-bottom:10px}
+.ai-input{background:#0D0A06;border:0.5px solid #3A2A18;border-radius:7px;padding:9px 12px;font-size:12px;color:#F0E2C0;font-family:Georgia,serif;flex:1;font-style:italic}
+.ai-input:focus{outline:none;border-color:#C9A76B}
+.ai-action-btns{display:flex;gap:8px}
+.ai-btn{background:#2A1F14;color:#F0E2C0;border:none;padding:8px 14px;border-radius:7px;font-size:11px;cursor:pointer;font-family:Georgia,serif;font-weight:600;transition:opacity 0.15s}
+.ai-btn:hover{opacity:0.8}
+.ai-suggestion{background:#111009;border-radius:8px;padding:12px;border:0.5px solid #2A1F10;display:none}
+.ai-sug-title{font-size:9px;letter-spacing:0.12em;color:#C9A76B;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.ai-sug-rows{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.ai-sug-row{display:flex;justify-content:space-between;padding:3px 0}
+.ai-sug-label{font-size:10px;color:#6A5040;font-weight:600}
+.ai-sug-val{font-size:10px;color:#C9A76B}
+.ai-apply-btn{margin-top:10px;background:#C9A76B;color:#1A0F00;border:none;padding:7px 16px;border-radius:6px;font-size:11px;cursor:pointer;font-family:Georgia,serif;font-weight:700}
+
+.add-to-cart{background:#2A1F14;color:#F0E2C0;border:none;width:100%;padding:13px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:Georgia,serif;letter-spacing:0.05em;transition:opacity 0.15s}
+.add-to-cart:hover{opacity:0.85}
+.back-link{display:block;text-align:center;margin-top:8px;font-size:11px;color:#A08060;cursor:pointer;font-style:italic}
+.back-link:hover{color:#C9A76B}
+
+/* cake SVG colours mapped to identity */
+.cake-dark{fill:#2D1A0A}
+.cake-mid{fill:#4A2810}
+.cake-light{fill:#6B3820}
+.cake-accent{fill:#C9A76B}
+.cake-cream{fill:#F5E8C8}
+.cake-fruit{fill:#E8784A}
+.cake-green{fill:#3A8A32}
+</style>
+
+<!-- PAGE 1: QUIZ -->
+<div class="page active" id="page-quiz">
+<div class="quiz-wrap">
+  <div class="quiz-header">
+    <div class="brand-label">awfully chocolate presents</div>
+    <div class="quiz-title"><em>awfully</em> <strong>you</strong></div>
+    <div class="quiz-sub-label">Personality Quiz</div>
+    <div class="gold-line"></div>
+    <div class="quiz-tagline">Which chocolate identity are you?</div>
+  </div>
+
+  <div class="progress-wrap"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+
+  <div class="q-block active" id="q1">
+    <div class="q-num">Question 1 of 5</div>
+    <div class="q-text">What moment feels most like you?</div>
+    <div class="opts">
+      <button class="opt" data-q="1" data-v="A" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Quiet night alone with your thoughts</span></button>
+      <button class="opt" data-q="1" data-v="B" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Loud celebration with people i love</span></button>
+      <button class="opt" data-q="1" data-v="C" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Slow morning with coffee in hand</span></button>
+      <button class="opt" data-q="1" data-v="D" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Exploring somewhere new</span></button>
+    </div>
+    <div class="nav-row"><span></span><button class="btn-next" id="n1" onclick="goQ(1,2)" disabled>Next →</button></div>
+  </div>
+
+  <div class="q-block" id="q2">
+    <div class="q-num">Question 2 of 5</div>
+    <div class="q-text">What image attracts you the most?</div>
+    <div class="opts">
+      <button class="opt" data-q="2" data-v="A" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Minimalist dark cake</span></button>
+      <button class="opt" data-q="2" data-v="B" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Fruity, vibrant cake</span></button>
+      <button class="opt" data-q="2" data-v="C" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Rustic, layered indulgent cake</span></button>
+      <button class="opt" data-q="2" data-v="D" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Elegant gold-accented cake</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="goQ(2,1)">← Back</button><button class="btn-next" id="n2" onclick="goQ(2,3)" disabled>Next →</button></div>
+  </div>
+
+  <div class="q-block" id="q3">
+    <div class="q-num">Question 3 of 5</div>
+    <div class="q-text">What captivates you the most?</div>
+    <div class="opts">
+      <button class="opt" data-q="3" data-v="A" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Depth of flavour</span></button>
+      <button class="opt" data-q="3" data-v="B" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Visual beauty</span></button>
+      <button class="opt" data-q="3" data-v="C" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Meaning behind it</span></button>
+      <button class="opt" data-q="3" data-v="D" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Comfort and familiarity</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="goQ(3,2)">← Back</button><button class="btn-next" id="n3" onclick="goQ(3,4)" disabled>Next →</button></div>
+  </div>
+
+  <div class="q-block" id="q4">
+    <div class="q-num">Question 4 of 5</div>
+    <div class="q-text">What does your ideal cake feel like?</div>
+    <div class="opts">
+      <button class="opt" data-q="4" data-v="A" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Bold</span></button>
+      <button class="opt" data-q="4" data-v="B" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Light</span></button>
+      <button class="opt" data-q="4" data-v="C" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Comforting</span></button>
+      <button class="opt" data-q="4" data-v="D" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Refined</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="goQ(4,3)">← Back</button><button class="btn-next" id="n4" onclick="goQ(4,5)" disabled>Next →</button></div>
+  </div>
+
+  <div class="q-block" id="q5">
+    <div class="q-num">Question 5 of 5</div>
+    <div class="q-text">Pick a word that feels most like you.</div>
+    <div class="opts">
+      <button class="opt" data-q="5" data-v="A" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Intense</span></button>
+      <button class="opt" data-q="5" data-v="B" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Playful</span></button>
+      <button class="opt" data-q="5" data-v="C" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Elegant</span></button>
+      <button class="opt" data-q="5" data-v="D" onclick="pick(this)"><div class="dot"><div class="dot-in"></div></div><span class="opt-label">Warm</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="goQ(5,4)">← Back</button><button class="btn-next" id="n5" onclick="showResult()" disabled>Reveal my identity →</button></div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 2: RESULT -->
+<div class="page" id="page-result">
+<div class="results-wrap">
+  <div class="result-top">
+    <div class="result-eyebrow">your chocolate identity</div>
+    <div class="result-name" id="r-name"></div>
+    <div class="result-tag" id="r-tag"></div>
+  </div>
+  <div class="result-card" id="r-card">
+    <div class="result-traits" id="r-traits"></div>
+    <div class="result-desc" id="r-desc"></div>
+    <div class="cake-match-box" id="r-cake-box">
+      <div class="cake-top" id="r-cake-top">your cake match</div>
+      <div class="cake-name" id="r-cake-name"></div>
+    </div>
+    <button class="btn-studio" id="r-cta" onclick="goStudio()"></button>
+    <button class="btn-retake" onclick="retake()">Retake the quiz</button>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 3: STUDIO -->
+<div class="page" id="page-studio">
+  <div class="studio-banner">FREE ISLANDWIDE NORMAL DELIVERY FOR ORDERS ABOVE $100</div>
+  <div class="studio-nav">
+    <div class="nav-brand">awfully<strong>chocolate</strong></div>
+    <div class="nav-links">
+      <span class="nav-link">Cakes</span>
+      <span class="nav-link">Chocolates</span>
+      <span class="nav-link">Gifting</span>
+      <span class="nav-link active-nav">Studio Customisation</span>
+    </div>
+  </div>
+  <div class="studio-body">
+    <div class="studio-header">
+      <div class="studio-title-row">
+        <div class="studio-title"><em>awfully</em> <strong>you</strong> &nbsp;Cake Studio Customisation</div>
+        <div class="ai-badge" id="ai-badge" style="display:none">AI-Assisted</div>
+      </div>
+      <div class="studio-sub">Design your dream cake and preview it in 3D</div>
+    </div>
+
+    <div class="studio-main">
+      <div class="cake-preview">
+        <div class="cake-svg-wrap">
+          <svg id="cake-svg" width="180" height="180" viewBox="0 0 180 180">
+            <ellipse cx="90" cy="148" rx="72" ry="16" fill="#1A0A00" opacity="0.18"/>
+            <rect x="28" y="100" width="124" height="40" rx="8" id="s-base" fill="#3A1E08"/>
+            <rect x="36" y="68" width="108" height="38" rx="6" id="s-mid" fill="#4A2810"/>
+            <rect x="44" y="44" width="92" height="30" rx="6" id="s-top" fill="#5A3218"/>
+            <ellipse cx="90" cy="44" rx="46" ry="10" id="s-top-ellipse" fill="#6B3820"/>
+            <rect x="28" y="97" width="124" height="6" rx="2" id="s-frosting1" fill="#F5E8C8" opacity="0.7"/>
+            <rect x="36" y="65" width="108" height="6" rx="2" id="s-frosting2" fill="#F5E8C8" opacity="0.7"/>
+            <text x="90" y="125" text-anchor="middle" font-family="Georgia,serif" font-size="11" id="s-msg" fill="#F0E2C0" font-style="italic">Original AC Cake</text>
+            <g id="s-topping"></g>
+          </svg>
+        </div>
+        <div class="preview-hint">3D preview</div>
+      </div>
+
+      <div class="creation-panel">
+        <div class="creation-title" id="panel-title">Your Creation</div>
+        <div id="creation-rows"></div>
+      </div>
+    </div>
+
+    <div class="steps-bar" id="steps-bar"></div>
+
+    <div class="config-panel" id="config-panel">
+      <div class="config-title" id="config-title"></div>
+      <div class="config-opts" id="config-opts"></div>
+    </div>
+
+    <div class="ai-panel" id="ai-panel" style="display:none">
+      <div class="ai-title">Design with AI</div>
+      <div class="ai-prompt-row">
+        <input class="ai-input" id="ai-input" placeholder="e.g. Y2K 21st birthday cake with holographic sprinkles..."/>
+      </div>
+      <div class="ai-action-btns">
+        <button class="ai-btn" onclick="runAI()">Generate Design</button>
+        <button class="ai-btn" style="background:#1A1208" onclick="refineAI()">Refine</button>
+        <button class="ai-btn" style="background:#1A1208" onclick="clearAI()">Start Over</button>
+      </div>
+      <div class="ai-suggestion" id="ai-sug">
+        <div class="ai-sug-title">AI Suggested Refinements</div>
+        <div class="ai-sug-rows" id="ai-sug-rows"></div>
+        <button class="ai-apply-btn" onclick="applyAI()">Apply suggestions</button>
+      </div>
+    </div>
+
+    <button class="add-to-cart" onclick="addCart()">Add to cart — Customise &amp; Order</button>
+    <span class="back-link" onclick="goBack()">← Back to my result</span>
+  </div>
+</div>
+
+<script>
+const ans = {};
+const RESULTS = {
+  midnight:{name:"The Midnight Minimalist",tag:"You don't need more. You just need better.",traits:["Composed","Intentional","Discerning"],desc:"Dark chocolate is not just a flavour to you — it's a philosophy. You strip away the noise and go straight to what matters.",card:"#1A1A1A",text:"#E8DCC8",traitBg:"#2D2D2D",traitColor:"#C9A76B",cakeBg:"#111",cakeTopBg:"#C9A76B",cakeTopText:"#1A1A1A",cakeNameColor:"#E8DCC8",cta:"Design my All Chocolate Cake →",cake:"Original All Chocolate Cake",defaults:{base:"Original All Chocolate Cake",size:"6-inch",allergen:"No Nuts",flavour:"Classic Dark Chocolate",filling:"Chocolate Ganache",topping:"Chocolate Shavings",message:""}},
+  romantic:{name:"The Romantic Indulgent",tag:"You aren't afraid of sweetness.",traits:["Sentimental","Warm","Generous"],desc:"For you, cake is never just cake. It is a love language, a memory, a gesture.",card:"#FFF0E5",text:"#6B2A1A",traitBg:"#F4C5A8",traitColor:"#8B3A20",cakeBg:"#FDEBD8",cakeTopBg:"#E8784A",cakeTopText:"#FFF",cakeNameColor:"#5A1A08",cta:"Design my Chocolate Banana Cake →",cake:"Chocolate Banana Cake",defaults:{base:"Chocolate Banana Cake",size:"6-inch",allergen:"No Nuts",flavour:"Milk Chocolate & Banana",filling:"Banana Cream",topping:"Fresh Banana Slices",message:""}},
+  bold:{name:"The Bold Creator",tag:"You don't follow flavours. You reinvent them.",traits:["Expressive","Experimental","Fearless"],desc:"You push the limits because you know the best discoveries happen at the edge.",card:"#1C0F00",text:"#F4D4A0",traitBg:"#3D1F00",traitColor:"#F4A827",cakeBg:"#120800",cakeTopBg:"#E8941A",cakeTopText:"#1C0F00",cakeNameColor:"#F4D4A0",cta:"Design my Salted Caramel Cake →",cake:"Salted Caramel Chocolate Cake",defaults:{base:"Salted Caramel Chocolate Cake",size:"6-inch",allergen:"No Nuts",flavour:"Salted Caramel",filling:"Salted Caramel Ganache",topping:"Gold Leaf + Caramel Drizzle",message:""}},
+  comfort:{name:"The Comfort Seeker",tag:"You just love the familiarity.",traits:["Grounded","Nurturing","Dependable"],desc:"There is something deeply beautiful about choosing what you love and loving it fully.",card:"#F5EDD8",text:"#4A2E0A",traitBg:"#E8D0A0",traitColor:"#7A4E1A",cakeBg:"#EDE0C4",cakeTopBg:"#C9962A",cakeTopText:"#FFF",cakeNameColor:"#4A2E0A",cta:"Design my Caramel Brittle Cake →",cake:"Caramel Brittle Chocolate Cake",defaults:{base:"Caramel Brittle Chocolate Cake",size:"6-inch",allergen:"Contains Nuts",flavour:"Milk Chocolate",filling:"Caramel Cream",topping:"Brittle Crumble",message:""}},
+  refined:{name:"The Refined Celebrator",tag:"You deserve every moment.",traits:["Detail-oriented","Tasteful","Elevated"],desc:"You appreciate that true luxury is in the details. These are not small things to you — they are everything.",card:"#0D0D0D",text:"#E8D9B0",traitBg:"#1E1A10",traitColor:"#C9A76B",cakeBg:"#141008",cakeTopBg:"#C9A76B",cakeTopText:"#0D0D0D",cakeNameColor:"#E8D9B0",cta:"Design my Chocolate Espresso Cake →",cake:"Chocolate Espresso Cake",defaults:{base:"Chocolate Espresso Cake",size:"6-inch",allergen:"No Nuts",flavour:"Dark Espresso",filling:"Espresso Ganache",topping:"Gold Leaf + Shavings",message:""}},
+  mindful:{name:"The Mindful Curator",tag:"You choose with purpose, without compromise.",traits:["Thoughtful","Intentional","Principled"],desc:"You never settle. You know what matters to you and you approach every choice carefully.",card:"#EFF6EE",text:"#1A4A16",traitBg:"#C4DFC0",traitColor:"#2A6A24",cakeBg:"#E4F0E2",cakeTopBg:"#3A8A32",cakeTopText:"#FFF",cakeNameColor:"#1A4A16",cta:"Design my Flourless Chocolate Cake →",cake:"Flourless Chocolate Cake",defaults:{base:"Flourless Chocolate Cake",size:"6-inch",allergen:"Gluten-Free",flavour:"Dark Chocolate",filling:"Chocolate Mousse",topping:"Cocoa Dusting",message:""}}
+};
+
+const STEPS = [
+  {id:"base",label:"01 Cake Base",title:"Choose your cake base",opts:["Original All Chocolate Cake","Chocolate Banana Cake","Salted Caramel Chocolate Cake","Caramel Brittle Chocolate Cake","Chocolate Espresso Cake","Flourless Chocolate Cake"]},
+  {id:"size",label:"02 Size",title:"Choose your size",opts:["4-inch (serves 4–6)","6-inch (serves 8–10)","8-inch (serves 12–15)","10-inch (serves 18–22)"]},
+  {id:"allergen",label:"03 Allergen",title:"Allergen preference",opts:["No Nuts","Contains Nuts","Gluten-Free","Dairy-Free","No Preference"]},
+  {id:"flavour",label:"04 Flavour",title:"Choose your flavour",opts:["Classic Dark Chocolate","Milk Chocolate","Dark Espresso","Salted Caramel","Milk Chocolate & Banana","Dark Chocolate"]},
+  {id:"filling",label:"05 Filling",title:"Choose your filling",opts:["Chocolate Ganache","Salted Caramel Ganache","Banana Cream","Espresso Ganache","Caramel Cream","Chocolate Mousse"]},
+  {id:"topping",label:"06 Topping",title:"Choose your topping",opts:["Chocolate Shavings","Gold Leaf + Shavings","Fresh Banana Slices","Gold Leaf + Caramel Drizzle","Brittle Crumble","Cocoa Dusting","Edible Glitter","Edible Flowers"]},
+  {id:"message",label:"07 Message",title:"Personalise your message",opts:null},
+  {id:"ai",label:"08 AI-Assist",title:"Design with AI",opts:null}
+];
+
+let curResult = null;
+let curStep = 0;
+let studioConfig = {};
+
+const MAP = {'1':{A:'midnight',B:'romantic',C:'comfort',D:'bold'},'2':{A:'midnight',B:'romantic',C:'bold',D:'refined'},'3':{A:'midnight',B:'refined',C:'mindful',D:'comfort'},'4':{A:'bold',B:'romantic',C:'comfort',D:'refined'},'5':{A:'midnight',B:'romantic',C:'refined',D:'comfort'}};
+
+function pick(btn){
+  const q=btn.dataset.q,v=btn.dataset.v;
+  document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  ans[q]=v;
+  document.getElementById('n'+q).disabled=false;
+}
+function goQ(from,to){
+  document.getElementById('q'+from).classList.remove('active');
+  document.getElementById('q'+to).classList.add('active');
+  document.getElementById('pbar').style.width=((to-1)/5*100)+'%';
+}
+function calcResult(){
+  const scores={midnight:0,romantic:0,bold:0,comfort:0,refined:0,mindful:0};
+  for(const q in ans){const k=MAP[q][ans[q]];if(k)scores[k]++;}
+  return Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+}
+function showResult(){
+  const key=calcResult();
+  curResult=key;
+  const r=RESULTS[key];
+  document.getElementById('r-name').textContent=r.name;
+  document.getElementById('r-name').style.color=r.text.startsWith('#E')||r.text.startsWith('#F')?'var(--color-text-primary)':r.text;
+  document.getElementById('r-tag').textContent=r.tag;
+  const card=document.getElementById('r-card');
+  card.style.background=r.card;
+  card.style.color=r.text;
+  const traitsEl=document.getElementById('r-traits');
+  traitsEl.innerHTML=r.traits.map(t=>`<span class="trait" style="background:${r.traitBg};color:${r.traitColor}">${t}</span>`).join('');
+  document.getElementById('r-desc').textContent=r.desc;
+  document.getElementById('r-desc').style.color=r.text;
+  const cb=document.getElementById('r-cake-box');
+  cb.style.background=r.cakeBg;
+  const ct=document.getElementById('r-cake-top');
+  ct.style.background=r.cakeTopBg;ct.style.color=r.cakeTopText;
+  const cn=document.getElementById('r-cake-name');
+  cn.textContent=r.cake;cn.style.color=r.cakeNameColor;
+  const cta=document.getElementById('r-cta');
+  cta.textContent=r.cta;
+  cta.style.background=r.cakeTopBg;cta.style.color=r.cakeTopText;
+  showPage('page-result');
+}
+function goStudio(){
+  const r=RESULTS[curResult];
+  studioConfig={...r.defaults};
+  curStep=0;
+  renderStudio();
+  showPage('page-studio');
+}
+function goBack(){showPage('page-result');}
+function retake(){
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.q-block').forEach(b=>b.classList.remove('active'));
+  document.getElementById('q1').classList.add('active');
+  document.getElementById('pbar').style.width='0%';
+  showPage('page-quiz');
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderStudio(){
+  const step=STEPS[curStep];
+  const stepsBar=document.getElementById('steps-bar');
+  stepsBar.innerHTML=STEPS.map((s,i)=>`<span class="step-item${i===curStep?' active-step':''}" onclick="jumpStep(${i})">${s.label}</span>${i<STEPS.length-1?'<span class="step-sep"> &rsaquo; </span>':''}`).join('');
+
+  const panel=document.getElementById('config-panel');
+  const aiPanel=document.getElementById('ai-panel');
+  const aiBadge=document.getElementById('ai-badge');
+
+  if(step.id==='ai'){
+    panel.style.display='none';
+    aiPanel.style.display='block';
+    aiBadge.style.display='inline-block';
+  } else {
+    panel.style.display='block';
+    aiPanel.style.display='none';
+    document.getElementById('config-title').textContent=step.title;
+    const optsEl=document.getElementById('config-opts');
+    if(step.id==='message'){
+      optsEl.innerHTML=`<div style="width:100%">
+        <div style="font-size:11px;color:#8A7355;margin-bottom:6px">Personalise your message <span style="color:#A08060">[Max: 30 chars]</span></div>
+        <div class="msg-input-wrap">
+          <input class="msg-input" maxlength="30" placeholder="e.g. Happy 21st..." value="${studioConfig.message||''}" oninput="studioConfig.message=this.value;updateMsgPreview(this.value)" id="msg-inp"/>
+        </div>
+        <div class="font-row">
+          <span style="font-size:11px;color:#8A7355;align-self:center">Font:</span>
+          ${['Calligraphy','Serif','Sans-Serif','Script'].map(f=>`<button class="font-sel${(studioConfig.font||'Calligraphy')===f?' cfg-sel':''}" onclick="studioConfig.font='${f}';renderStudio()">${f}</button>`).join('')}
+          <span style="font-size:11px;color:#8A7355;align-self:center">Colour:</span>
+          ${['Gold','White','Dark','Rose'].map(c=>`<button class="font-sel${(studioConfig.msgColor||'Gold')===c?' cfg-sel':''}" onclick="studioConfig.msgColor='${c}';renderStudio()">${c}</button>`).join('')}
+        </div>
+      </div>`;
+    } else {
+      optsEl.innerHTML=step.opts.map(o=>`<button class="cfg-btn${studioConfig[step.id]===o||studioConfig[step.id]===o.split(' (')[0]?' cfg-sel':''}" onclick="selectOpt('${step.id}','${o}')">${o}</button>`).join('');
+    }
+  }
+  updateCreationPanel();
+  updateCakeSVG();
+}
+
+function jumpStep(i){curStep=i;renderStudio();}
+function selectOpt(field,val){
+  studioConfig[field]=val.split(' (')[0];
+  if(curStep<STEPS.length-1)curStep++;
+  renderStudio();
+}
+function updateMsgPreview(val){
+  document.getElementById('s-msg').textContent=val||'';
+  updateCreationPanel();
+}
+function updateCreationPanel(){
+  const r=curResult?RESULTS[curResult]:null;
+  const isAI=document.getElementById('ai-sug').style.display==='block';
+  document.getElementById('panel-title').textContent=isAI?'AI Suggested Refinements':'Your Creation';
+  const rows=[
+    {label:'Cake',val:studioConfig.base||'—'},
+    {label:'Size',val:studioConfig.size||'—'},
+    {label:'Allergen',val:studioConfig.allergen||'—'},
+    {label:'Flavour',val:studioConfig.flavour||'—'},
+    {label:'Filling',val:studioConfig.filling||'—'},
+    {label:'Topping',val:studioConfig.topping||'—'},
+    {label:'Message',val:studioConfig.message||'—'},
+  ];
+  document.getElementById('creation-rows').innerHTML=rows.map(rw=>`<div class="creation-row"><span class="cr-label">${rw.label}:</span><span class="cr-val">${rw.val}</span></div>`).join('');
+}
+function updateCakeSVG(){
+  const colors={
+    'Original All Chocolate Cake':['#2D1208','#3D1A08','#4A2410','#F5E8C8'],
+    'Chocolate Banana Cake':['#4A2808','#6B3820','#F4A261','#FDEBD8'],
+    'Salted Caramel Chocolate Cake':['#2A1400','#4A2A00','#C9962A','#F5E8C8'],
+    'Caramel Brittle Chocolate Cake':['#3A2010','#5A3820','#C9962A','#F5E8C8'],
+    'Chocolate Espresso Cake':['#180A00','#2A1400','#4A3020','#F0E0B0'],
+    'Flourless Chocolate Cake':['#2A1808','#3A2410','#4A3020','#E8E0D0'],
+  };
+  const base=studioConfig.base||'Original All Chocolate Cake';
+  const c=colors[base]||colors['Original All Chocolate Cake'];
+  document.getElementById('s-base').setAttribute('fill',c[0]);
+  document.getElementById('s-mid').setAttribute('fill',c[1]);
+  document.getElementById('s-top').setAttribute('fill',c[2]);
+  document.getElementById('s-top-ellipse').setAttribute('fill',c[2]);
+  document.getElementById('s-frosting1').setAttribute('fill',c[3]);
+  document.getElementById('s-frosting2').setAttribute('fill',c[3]);
+  const toppingG=document.getElementById('s-topping');
+  const tp=studioConfig.topping||'';
+  if(tp.includes('Gold')){toppingG.innerHTML='<circle cx="65" cy="38" r="5" fill="#C9A76B"/><circle cx="90" cy="34" r="4" fill="#C9A76B"/><circle cx="115" cy="38" r="5" fill="#C9A76B"/>';}
+  else if(tp.includes('Banana')){toppingG.innerHTML='<ellipse cx="75" cy="36" rx="10" ry="5" fill="#F4D03F" transform="rotate(-20 75 36)"/><ellipse cx="100" cy="35" rx="10" ry="5" fill="#F4D03F" transform="rotate(10 100 35)"/>';}
+  else if(tp.includes('Brittle')){toppingG.innerHTML='<rect x="66" y="34" width="8" height="4" rx="1" fill="#C9962A"/><rect x="80" y="32" width="10" height="4" rx="1" fill="#C9962A"/><rect x="96" y="34" width="7" height="4" rx="1" fill="#C9962A"/><rect x="109" y="33" width="8" height="4" rx="1" fill="#C9962A"/>';}
+  else if(tp.includes('Cocoa')){toppingG.innerHTML='<circle cx="72" cy="36" r="2" fill="#4A2810" opacity="0.6"/><circle cx="82" cy="33" r="1.5" fill="#4A2810" opacity="0.5"/><circle cx="92" cy="35" r="2" fill="#4A2810" opacity="0.6"/><circle cx="103" cy="33" r="1.5" fill="#4A2810" opacity="0.5"/><circle cx="112" cy="36" r="2" fill="#4A2810" opacity="0.6"/>';}
+  else if(tp.includes('Glitter')){toppingG.innerHTML='<circle cx="70" cy="36" r="2.5" fill="#E8E0FF" opacity="0.8"/><circle cx="85" cy="33" r="2" fill="#F0D8FF" opacity="0.8"/><circle cx="98" cy="35" r="2.5" fill="#D8F0FF" opacity="0.8"/><circle cx="112" cy="36" r="2" fill="#FFE8F0" opacity="0.8"/>';}
+  else if(tp.includes('Flowers')){toppingG.innerHTML='<circle cx="78" cy="35" r="5" fill="#F4C0D1"/><circle cx="78" cy="35" r="2" fill="#F8E8A0"/><circle cx="100" cy="34" r="5" fill="#ED93B1"/><circle cx="100" cy="34" r="2" fill="#F8E8A0"/>';}
+  else{toppingG.innerHTML='';}
+  const msgColor={Gold:'#C9A76B',White:'#FFFFFF',Dark:'#1A0A00',Rose:'#F4C0D1'};
+  const mc=msgColor[studioConfig.msgColor||'Gold']||'#C9A76B';
+  document.getElementById('s-msg').setAttribute('fill',mc);
+  document.getElementById('s-msg').textContent=studioConfig.message||(base.length>20?base.substring(0,18)+'…':base);
+}
+
+const AI_SUGGESTIONS={
+  midnight:{base:'Original All Chocolate Cake',topping:'Gold Leaf + Shavings',filling:'Chocolate Ganache',flavour:'Classic Dark Chocolate',message:'Timeless.'},
+  romantic:{base:'Chocolate Banana Cake',topping:'Edible Flowers',filling:'Banana Cream',flavour:'Milk Chocolate & Banana',message:'With love'},
+  bold:{base:'Salted Caramel Chocolate Cake',topping:'Edible Glitter',filling:'Salted Caramel Ganache',flavour:'Salted Caramel',message:'Be bold'},
+  comfort:{base:'Caramel Brittle Chocolate Cake',topping:'Brittle Crumble',filling:'Caramel Cream',flavour:'Milk Chocolate',message:'Home'},
+  refined:{base:'Chocolate Espresso Cake',topping:'Gold Leaf + Shavings',filling:'Espresso Ganache',flavour:'Dark Espresso',message:'Celebrate'},
+  mindful:{base:'Flourless Chocolate Cake',topping:'Cocoa Dusting',filling:'Chocolate Mousse',flavour:'Dark Chocolate',message:'Intentional'}
+};
+let aiSugg=null;
+function runAI(){
+  const prompt=document.getElementById('ai-input').value;
+  const base=curResult?AI_SUGGESTIONS[curResult]:{base:'Original All Chocolate Cake',topping:'Gold Leaf + Shavings',filling:'Chocolate Ganache',flavour:'Classic Dark Chocolate',message:'Custom'};
+  if(prompt.toLowerCase().includes('y2k')||prompt.toLowerCase().includes('retro')){
+    aiSugg={...base,topping:'Edible Glitter',message:'21st',font:'Chunky Retro',msgColor:'Rose'};
+  } else if(prompt.toLowerCase().includes('birthday')){
+    aiSugg={...base,topping:'Edible Flowers',message:'Happy Birthday',font:'Calligraphy',msgColor:'Gold'};
+  } else {
+    aiSugg={...base};
+  }
+  const sug=document.getElementById('ai-sug');
+  sug.style.display='block';
+  document.getElementById('ai-sug-rows').innerHTML=Object.entries(aiSugg).map(([k,v])=>`<div class="ai-sug-row"><span class="ai-sug-label">${k.charAt(0).toUpperCase()+k.slice(1)}:</span><span class="ai-sug-val">${v}</span></div>`).join('');
+  updateCreationPanel();
+}
+function refineAI(){
+  if(aiSugg){aiSugg.topping='Edible Glitter';aiSugg.msgColor='Rose';document.getElementById('ai-sug-rows').innerHTML=Object.entries(aiSugg).map(([k,v])=>`<div class="ai-sug-row"><span class="ai-sug-label">${k.charAt(0).toUpperCase()+k.slice(1)}:</span><span class="ai-sug-val">${v}</span></div>`).join('');}
+}
+function clearAI(){aiSugg=null;document.getElementById('ai-sug').style.display='none';document.getElementById('ai-input').value='';updateCreationPanel();}
+function applyAI(){
+  if(aiSugg){Object.assign(studioConfig,aiSugg);document.getElementById('ai-sug').style.display='none';curStep=0;renderStudio();}
+}
+function addCart(){alert('Added to cart! Your custom '+studioConfig.base+' is ready to order.');}
+</script>
